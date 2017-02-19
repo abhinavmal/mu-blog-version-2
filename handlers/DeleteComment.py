@@ -12,6 +12,9 @@ class DeleteComment(Handler):
             return
         del_comment = Comment.get_by_id(long(comment_id))
         if del_comment:
+            if user.key != del_comment.author:
+                self.logout()
+                return self.redirect("/login")
             del_title = post.title
             del_body = post.body
             del_likes = post.num_likes

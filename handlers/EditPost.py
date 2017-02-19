@@ -10,6 +10,9 @@ class EditPost(Handler):
         if not user:
             self.redirect("/login")
             return
+        if user.key != post.author:
+            self.logout()
+            return self.redirect("/login")
         self.render("edit_post.html", user=user, title=post.title,
                     body=post.body, post_id=str(post_id))
 

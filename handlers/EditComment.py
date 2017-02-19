@@ -13,6 +13,9 @@ class EditComment(Handler):
         cur_comment = Comment.get_by_id(long(comment_id))
         if (not post) or (not cur_comment):
             return self.redirect('/error')
+        if user.key != cur_comment.author:
+            self.logout()
+            return self.redirect("/login")
         post_comments = Comment.query(Comment.for_post == post.key) \
                                .order(-Comment.created) \
                                .fetch()
@@ -33,6 +36,9 @@ class EditComment(Handler):
             return self.redirect('/error')
         if comment:
             c = Comment.get_by_id(long(comment_id))
+            if user.key != c.author:
+                self.logout()
+                return self.redirect("/login")
             c.content = comment
             c.put()
             # Time.sleep() for eventual consistency of the database

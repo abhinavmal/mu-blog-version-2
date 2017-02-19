@@ -9,6 +9,9 @@ class DeletePost(Handler):
         if not user:
             self.redirect("/login")
             return
+        if user.key != post.author:
+            self.logout()
+            return self.redirect("/login")
         if post:
             del_title = post.title
             del_body = post.body
@@ -18,7 +21,7 @@ class DeletePost(Handler):
             del_date = post.get_date()
             del_time = post.get_time()
             # Delete all comments associated with the post
-            comments = Comment.query(Comment.for_post == str(post_id))
+            comments = Comment.query(Comment.for_post == post.key)
             for comment in comments:
                 comment.key.delete()
             post.key.delete()
